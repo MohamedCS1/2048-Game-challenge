@@ -14,7 +14,7 @@ lateinit var grid: Grid
 var screenWidth:Int? = null
 var screenHeight:Int? = null
 var standardSize:Double? = null
-
+var tileManager:TileManager? = null
 class GameManager(context:Context ,val attrs:AttributeSet):SurfaceHolder.Callback,
     SurfaceView(context) {
 
@@ -26,6 +26,7 @@ class GameManager(context:Context ,val attrs:AttributeSet):SurfaceHolder.Callbac
         screenHeight = displayMetrics.heightPixels
         standardSize = ((screenWidth!! * .88) / 4)
         grid = Grid(resources , screenWidth!!, screenHeight!! , standardSize!!.toInt())
+        tileManager = TileManager(resources , standardSize!!.toInt(), screenWidth!!, screenHeight!!)
     }
 
     lateinit var mainThread: MainThread
@@ -52,11 +53,14 @@ class GameManager(context:Context ,val attrs:AttributeSet):SurfaceHolder.Callbac
     }
     fun update(){
         Log.d("Test2048" ,"Update")
+        tileManager?.update()
     }
 
     override fun draw(canvas: Canvas?) {
         Log.d("Test2048" ,"Draw")
         super.draw(canvas)
+        canvas?.drawRGB(255 ,255 ,255)
         grid.draw(canvas!!)
+        tileManager?.draw(canvas)
     }
 }

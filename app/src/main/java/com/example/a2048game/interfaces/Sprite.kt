@@ -1,4 +1,4 @@
-package com.example.a2048game.sprites
+package com.example.a2048game.interfaces
 
 import android.graphics.Canvas
 

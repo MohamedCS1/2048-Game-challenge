@@ -5,9 +5,11 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import com.example.a2048game.R
+import com.example.a2048game.interfaces.Sprite
 
 lateinit var grid:Bitmap
-class Grid(val resources: Resources ,val screenWith:Int ,val screenHeight:Int ,val standardSize:Int):Sprite {
+class Grid(val resources: Resources ,val screenWith:Int ,val screenHeight:Int ,val standardSize:Int):
+    Sprite {
 
 
     init {

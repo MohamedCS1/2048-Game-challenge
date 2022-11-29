@@ -1,17 +1,31 @@
 package com.example.a2048game
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import com.example.a2048game.sprites.Grid
+
+lateinit var grid: Grid
+var screenWidth:Int? = null
+var screenHeight:Int? = null
+var standardSize:Double? = null
 
 class GameManager(context:Context ,val attrs:AttributeSet):SurfaceHolder.Callback,
     SurfaceView(context) {
 
     init {
         holder.addCallback(this)
+        val displayMetrics = DisplayMetrics()
+        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+        screenWidth = displayMetrics.widthPixels
+        screenHeight = displayMetrics.heightPixels
+        standardSize = ((screenWidth!! * .88) / 4)
+        grid = Grid(resources , screenWidth!!, screenHeight!! , standardSize!!.toInt())
     }
 
     lateinit var mainThread: MainThread
@@ -43,5 +57,6 @@ class GameManager(context:Context ,val attrs:AttributeSet):SurfaceHolder.Callbac
     override fun draw(canvas: Canvas?) {
         Log.d("Test2048" ,"Draw")
         super.draw(canvas)
+        grid.draw(canvas!!)
     }
 }

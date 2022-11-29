@@ -5,17 +5,22 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import com.example.a2048game.interfaces.Sprite
+import com.example.a2048game.interfaces.SwipeCallBack
 import com.example.a2048game.interfaces.TileManagerCallback
 import com.example.a2048game.sprites.Tile
 
 lateinit var tile:Tile
 var tileBitmaps = hashMapOf<Int ,Bitmap>()
 var drawables = arrayListOf<Int>()
+private val matrix = Array(4) { arrayOfNulls<Tile>(4) }
+
 class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidth:Int ,val screenHeight:Int):TileManagerCallback, Sprite {
 
     init {
-        tile = Tile(standardSize ,screenWidth ,screenHeight ,this)
+        tile = Tile(standardSize ,screenWidth ,screenHeight ,this ,1 ,1)
         initBitmaps()
+
+        matrix[1][1] = tile
     }
 
     fun initBitmaps()
@@ -50,7 +55,35 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
     }
 
     override fun update() {
+        tile.update()
     }
+
+    fun onSwipe(direction: SwipeCallBack.Direction)
+    {
+        when(direction)
+        {
+            SwipeCallBack.Direction.UP->{
+                tile.move(0 ,1)
+                return
+            }
+
+            SwipeCallBack.Direction.DOWN->{
+                tile.move(3 ,1)
+                return
+            }
+
+            SwipeCallBack.Direction.LEFT->{
+                tile.move(1 ,0)
+                return
+            }
+
+            SwipeCallBack.Direction.RIGHT->{
+                tile.move(1 ,3)
+                return
+            }
+        }
+    }
+
 
     override fun getBitmap(count: Int): Bitmap {
         return tileBitmaps[count]!!

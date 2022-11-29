@@ -1,13 +1,16 @@
 package com.example.a2048game
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import com.example.a2048game.interfaces.SwipeCallBack
 import com.example.a2048game.sprites.Grid
 
 lateinit var grid: Grid
@@ -16,8 +19,9 @@ var screenHeight:Int? = null
 var standardSize:Double? = null
 var tileManager:TileManager? = null
 class GameManager(context:Context ,val attrs:AttributeSet):SurfaceHolder.Callback,
-    SurfaceView(context) {
+    SurfaceView(context),SwipeCallBack {
 
+    var swipe:SwipeListener? = null
     init {
         holder.addCallback(this)
         val displayMetrics = DisplayMetrics()
@@ -27,6 +31,8 @@ class GameManager(context:Context ,val attrs:AttributeSet):SurfaceHolder.Callbac
         standardSize = ((screenWidth!! * .88) / 4)
         grid = Grid(resources , screenWidth!!, screenHeight!! , standardSize!!.toInt())
         tileManager = TileManager(resources , standardSize!!.toInt(), screenWidth!!, screenHeight!!)
+        swipe = SwipeListener(context,this)
+        isLongClickable = true
     }
 
     lateinit var mainThread: MainThread
@@ -62,5 +68,16 @@ class GameManager(context:Context ,val attrs:AttributeSet):SurfaceHolder.Callbac
         canvas?.drawRGB(255 ,255 ,255)
         grid.draw(canvas!!)
         tileManager?.draw(canvas)
+    }
+
+
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        swipe?.onTouchEvent(event!!)
+        return super.onTouchEvent(event)
+    }
+
+    override fun onSwipe(direction: SwipeCallBack.Direction) {
+        tileManager?.onSwipe(direction)
     }
 }

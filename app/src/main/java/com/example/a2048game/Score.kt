@@ -49,14 +49,6 @@ class Score(
             (bmpTopScore.height * 4).toFloat(),
             paint
         )
-        if (a2048Bonus) {
-            canvas.drawBitmap(
-                bmp2048Bonus!!,
-                (screenWidth / 2 - 2 * standardSize!!).toFloat(),
-                (screenHeight / 2 - 2 * standardSize - 7 * bmp2048Bonus!!.height / 2).toFloat(),
-                null
-            )
-        }
     }
 
     override fun update() {}

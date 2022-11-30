@@ -153,7 +153,7 @@ class TileManager(
                     while (i < 4) {
                         var j = 0
                         while (j < 4) {
-                            val t = matrix[i][j]
+                            val tile = matrix[i][j]
                             var newT: Tile? = null
                             var matrixX = 0
                             var matrixY = 0
@@ -161,7 +161,7 @@ class TileManager(
                             while (a < 4) {
                                 var b = 0
                                 while (b < 4) {
-                                    if (newMatrix[a][b] == t) {
+                                    if (newMatrix[a][b] == tile) {
                                         newT = newMatrix[a][b]
                                         matrixX = a
                                         matrixY = b
@@ -172,8 +172,8 @@ class TileManager(
                                 a++
                             }
                             if (newT != null) {
-                                movingTiles!!.add(t)
-                                t!!.move(matrixX, matrixY)
+                                movingTiles!!.add(tile)
+                                tile!!.move(matrixX, matrixY)
                             }
                             j++
                         }
@@ -222,7 +222,7 @@ class TileManager(
                     while (i >= 0) {
                         var j = 0
                         while (j < 4) {
-                            val t = matrix[i][j]
+                            val tile = matrix[i][j]
                             var newT: Tile? = null
                             var matrixX = 0
                             var matrixY = 0
@@ -230,7 +230,7 @@ class TileManager(
                             while (a < 4) {
                                 var b = 0
                                 while (b < 4) {
-                                    if (newMatrix[a][b] == t) {
+                                    if (newMatrix[a][b] == tile) {
                                         newT = newMatrix[a][b]
                                         matrixX = a
                                         matrixY = b
@@ -241,8 +241,8 @@ class TileManager(
                                 a++
                             }
                             if (newT != null) {
-                                movingTiles!!.add(t)
-                                t!!.move(matrixX, matrixY)
+                                movingTiles!!.add(tile)
+                                tile!!.move(matrixX, matrixY)
                             }
                             j++
                         }
@@ -291,7 +291,7 @@ class TileManager(
                     while (i < 4) {
                         var j = 0
                         while (j < 4) {
-                            val t = matrix[i][j]
+                            val tile = matrix[i][j]
                             var newT: Tile? = null
                             var matrixX = 0
                             var matrixY = 0
@@ -299,7 +299,7 @@ class TileManager(
                             while (a < 4) {
                                 var b = 0
                                 while (b < 4) {
-                                    if (newMatrix[a][b] == t) {
+                                    if (newMatrix[a][b] == tile) {
                                         newT = newMatrix[a][b]
                                         matrixX = a
                                         matrixY = b
@@ -310,8 +310,8 @@ class TileManager(
                                 a++
                             }
                             if (newT != null) {
-                                movingTiles!!.add(t)
-                                t!!.move(matrixX, matrixY)
+                                movingTiles!!.add(tile)
+                                tile!!.move(matrixX, matrixY)
                             }
                             j++
                         }
@@ -360,7 +360,7 @@ class TileManager(
                     while (i < 4) {
                         var j = 3
                         while (j >= 0) {
-                            val t = matrix[i][j]
+                            val tile = matrix[i][j]
                             var newT: Tile? = null
                             var matrixX = 0
                             var matrixY = 0
@@ -368,7 +368,7 @@ class TileManager(
                             while (a < 4) {
                                 var b = 0
                                 while (b < 4) {
-                                    if (newMatrix[a][b] == t) {
+                                    if (newMatrix[a][b] == tile) {
                                         newT = newMatrix[a][b]
                                         matrixX = a
                                         matrixY = b
@@ -379,8 +379,8 @@ class TileManager(
                                 a++
                             }
                             if (newT != null) {
-                                movingTiles!!.add(t)
-                                t!!.move(matrixX, matrixY)
+                                movingTiles!!.add(tile)
+                                tile!!.move(matrixX, matrixY)
                             }
                             j--
                         }
@@ -418,13 +418,13 @@ class TileManager(
     private fun spawn() {
         if (toSpawn) {
             toSpawn = false
-            var t: Tile? = null
-            while (t == null) {
+            var tile: Tile? = null
+            while (tile == null) {
                 val x = Random().nextInt(4)
                 val y = Random().nextInt(4)
                 if (matrix[x][y] == null) {
-                    t = Tile(standardSize, screenWidth, screenHeight, this, x, y)
-                    matrix[x][y] = t
+                    tile = Tile(standardSize, screenWidth, screenHeight, this, x, y)
+                    matrix[x][y] = tile
                 }
             }
         }

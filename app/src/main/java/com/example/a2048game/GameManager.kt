@@ -66,7 +66,7 @@ class GameManager(context:Context ,val attrs:AttributeSet):SurfaceHolder.Callbac
     {
         endGame = false
         tileManager?.initGame()
-        score = Score(resources , screenWidth!!, screenHeight!!, standardSize ,getContext().getSharedPreferences(
+        score = Score(resources , screenWidth!!, screenHeight!!, standardSize , context.getSharedPreferences(
             SHAREE_NAME ,Context.MODE_PRIVATE))
     }
 

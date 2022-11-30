@@ -6,27 +6,31 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import com.example.a2048game.interfaces.Sprite
 import com.example.a2048game.interfaces.SwipeCallBack
+import com.example.a2048game.interfaces.SwipeCallBack.Direction.*
 import com.example.a2048game.interfaces.TileManagerCallback
 import com.example.a2048game.sprites.Tile
+import java.util.*
 
 
-class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidth:Int ,val screenHeight:Int):TileManagerCallback, Sprite {
-
-
+class TileManager(
+    private val resources: Resources,
+    private val standardSize: Int,
+    private val screenWidth: Int,
+    private val screenHeight: Int,
+) :
+    TileManagerCallback, Sprite {
     private val drawables: ArrayList<Int> = ArrayList()
     private val tileBitmaps: HashMap<Int, Bitmap> = HashMap()
-    private var matrix = Array(4){ arrayOfNulls<Tile>(4) }
-    private var moving = false
-    private var movingTiles: ArrayList<Tile>? = null
-
-
-    init {
-        initBitmaps()
-        initGame()
+    private var matrix = Array(4) {
+        arrayOfNulls<Tile>(
+            4
+        )
     }
+    private var moving = false
+    private var movingTiles: ArrayList<Tile?>? = null
+    private var toSpawn = false
 
-    fun initBitmaps()
-    {
+    private fun initBitmaps() {
         drawables.add(R.drawable.one)
         drawables.add(R.drawable.two)
         drawables.add(R.drawable.three)
@@ -43,22 +47,20 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
         drawables.add(R.drawable.fourteen)
         drawables.add(R.drawable.fifteen)
         drawables.add(R.drawable.sixteen)
-
-        for (i in 1..16)
-        {
-            val bitmap = BitmapFactory.decodeResource(resources , drawables[i-1])
-            val tileBitmap = Bitmap.createScaledBitmap(bitmap ,standardSize ,standardSize ,false)
-            tileBitmaps[i] = tileBitmap
+        for (i in 1..16) {
+            val bmp = BitmapFactory.decodeResource(resources, drawables[i - 1])
+            val tileBmp = Bitmap.createScaledBitmap(bmp, standardSize, standardSize, false)
+            tileBitmaps[i] = tileBmp
         }
     }
 
     fun initGame() {
-
         matrix = Array(4) { arrayOfNulls(4) }
+        movingTiles = ArrayList()
         var i = 0
-        while (i < 5) {
-            val x = java.util.Random().nextInt(4)
-            val y = java.util.Random().nextInt(4)
+        while (i < 2) {
+            val x = Random().nextInt(4)
+            val y = Random().nextInt(4)
             if (matrix[x][y] == null) {
                 val tile = Tile(standardSize, screenWidth, screenHeight, this, x, y)
                 matrix[x][y] = tile
@@ -69,7 +71,13 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
         }
     }
 
-   override fun draw(canvas: Canvas) {
+    override fun getBitmap(count: Int): Bitmap {
+        return tileBitmaps[count]!!
+    }
+
+
+
+    override fun draw(canvas: Canvas) {
         for (i in 0..3) {
             for (j in 0..3) {
                 if (matrix[i][j] != null) {
@@ -77,6 +85,7 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
                 }
             }
         }
+       
     }
 
     override fun update() {
@@ -98,7 +107,7 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
                 )
             }
             when (direction) {
-                SwipeCallBack.Direction.UP -> {
+                UP -> {
                     run {
                         var i = 0
                         while (i < 4) {
@@ -110,15 +119,19 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
                                     while (k >= 0) {
                                         if (newMatrix[k][j] == null) {
                                             newMatrix[k][j] = matrix[i][j]
-                                            if (newMatrix[k + 1][j] == matrix[i][j]) {
+                                            if (newMatrix[k + 1][j] == matrix[i][j]
+                                            ) {
                                                 newMatrix[k + 1][j] = null
                                             }
                                         } else if (newMatrix[k][j]!!
                                                 .getValue() == matrix[i][j]!!
-                                                .getValue() && !newMatrix[k][j]!!.toIncrement()
+                                                .getValue() && !newMatrix[k][j]!!
+                                                .toIncrement()
                                         ) {
-                                            newMatrix[k][j] = matrix[i][j]!!.increment()
-                                            if (newMatrix[k + 1][j] == matrix[i][j]) {
+                                            newMatrix[k][j] =
+                                                matrix[i][j]!!.increment()
+                                            if (newMatrix[k + 1][j] == matrix[i][j]
+                                            ) {
                                                 newMatrix[k + 1][j] = null
                                             }
                                         } else {
@@ -155,7 +168,7 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
                                 a++
                             }
                             if (newT != null) {
-                                movingTiles?.add(t!!)
+                                movingTiles!!.add(t)
                                 t!!.move(matrixX, matrixY)
                             }
                             j++
@@ -163,7 +176,7 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
                         i++
                     }
                 }
-                SwipeCallBack.Direction.DOWN -> {
+                DOWN -> {
                     run {
                         var i = 3
                         while (i >= 0) {
@@ -175,15 +188,19 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
                                     while (k < 4) {
                                         if (newMatrix[k][j] == null) {
                                             newMatrix[k][j] = matrix[i][j]
-                                            if (newMatrix[k - 1][j] == matrix[i][j]) {
+                                            if (newMatrix[k - 1][j] == matrix[i][j]
+                                            ) {
                                                 newMatrix[k - 1][j] = null
                                             }
                                         } else if (newMatrix[k][j]!!
                                                 .getValue() == matrix[i][j]!!
-                                                .getValue() && !newMatrix[k][j]!!.toIncrement()
+                                                .getValue() && !newMatrix[k][j]!!
+                                                .toIncrement()
                                         ) {
-                                            newMatrix[k][j] = matrix[i][j]!!.increment()
-                                            if (newMatrix[k - 1][j] == matrix[i][j]) {
+                                            newMatrix[k][j] =
+                                                matrix[i][j]!!.increment()
+                                            if (newMatrix[k - 1][j] == matrix[i][j]
+                                            ) {
                                                 newMatrix[k - 1][j] = null
                                             }
                                         } else {
@@ -220,7 +237,7 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
                                 a++
                             }
                             if (newT != null) {
-                                movingTiles?.add(t!!)
+                                movingTiles!!.add(t)
                                 t!!.move(matrixX, matrixY)
                             }
                             j++
@@ -228,7 +245,7 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
                         i--
                     }
                 }
-                SwipeCallBack.Direction.LEFT -> {
+                LEFT -> {
                     run {
                         var i = 0
                         while (i < 4) {
@@ -240,15 +257,19 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
                                     while (k >= 0) {
                                         if (newMatrix[i][k] == null) {
                                             newMatrix[i][k] = matrix[i][j]
-                                            if (newMatrix[i][k + 1] == matrix[i][j]) {
+                                            if (newMatrix[i][k + 1] == matrix[i][j]
+                                            ) {
                                                 newMatrix[i][k + 1] = null
                                             }
                                         } else if (newMatrix[i][k]!!
                                                 .getValue() == matrix[i][j]!!
-                                                .getValue() && !newMatrix[i][k]!!.toIncrement()
+                                                .getValue() && !newMatrix[i][k]!!
+                                                .toIncrement()
                                         ) {
-                                            newMatrix[i][k] = matrix[i][j]!!.increment()
-                                            if (newMatrix[i][k + 1] == matrix[i][j]) {
+                                            newMatrix[i][k] =
+                                                matrix[i][j]!!.increment()
+                                            if (newMatrix[i][k + 1] == matrix[i][j]
+                                            ) {
                                                 newMatrix[i][k + 1] = null
                                             }
                                         } else {
@@ -285,7 +306,7 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
                                 a++
                             }
                             if (newT != null) {
-                                movingTiles?.add(t!!)
+                                movingTiles!!.add(t)
                                 t!!.move(matrixX, matrixY)
                             }
                             j++
@@ -293,7 +314,7 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
                         i++
                     }
                 }
-                SwipeCallBack.Direction.RIGHT -> {
+                RIGHT -> {
                     run {
                         var i = 0
                         while (i < 4) {
@@ -305,15 +326,19 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
                                     while (k < 4) {
                                         if (newMatrix[i][k] == null) {
                                             newMatrix[i][k] = matrix[i][j]
-                                            if (newMatrix[i][k - 1] == matrix[i][j]) {
+                                            if (newMatrix[i][k - 1] == matrix[i][j]
+                                            ) {
                                                 newMatrix[i][k - 1] = null
                                             }
                                         } else if (newMatrix[i][k]!!
                                                 .getValue() == matrix[i][j]!!
-                                                .getValue() && !newMatrix[i][k]!!.toIncrement()
+                                                .getValue() && !newMatrix[i][k]!!
+                                                .toIncrement()
                                         ) {
-                                            newMatrix[i][k] = matrix[i][j]!!.increment()
-                                            if (newMatrix[i][k - 1] == matrix[i][j]) {
+                                            newMatrix[i][k] =
+                                                matrix[i][j]!!.increment()
+                                            if (newMatrix[i][k - 1] == matrix[i][j]
+                                            ) {
                                                 newMatrix[i][k - 1] = null
                                             }
                                         } else {
@@ -350,7 +375,7 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
                                 a++
                             }
                             if (newT != null) {
-                                movingTiles?.add(t!!)
+                                movingTiles!!.add(t)
                                 t!!.move(matrixX, matrixY)
                             }
                             j--
@@ -359,18 +384,47 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
                     }
                 }
             }
-          
+            for (i in 0..3) {
+                for (j in 0..3) {
+                    if (newMatrix[i][j] !== matrix[i][j]) {
+                        toSpawn = true
+                        break
+                    }
+                }
+            }
             matrix = newMatrix
+        }
+    }
+
+    override fun finishedMoving(tile: Tile) {
+
+        movingTiles!!.remove(tile)
+        if (movingTiles!!.isEmpty()) {
+            moving = false
+            spawn()
         }
     }
 
 
 
-
-
-
-    override fun getBitmap(count: Int): Bitmap {
-        return tileBitmaps[count]!!
+    private fun spawn() {
+        if (toSpawn) {
+            toSpawn = false
+            var t: Tile? = null
+            while (t == null) {
+                val x = Random().nextInt(4)
+                val y = Random().nextInt(4)
+                if (matrix[x][y] == null) {
+                    t = Tile(standardSize, screenWidth, screenHeight, this, x, y)
+                    matrix[x][y] = t
+                }
+            }
+        }
     }
 
+
+    init {
+        initBitmaps()
+        initGame()
+    }
 }

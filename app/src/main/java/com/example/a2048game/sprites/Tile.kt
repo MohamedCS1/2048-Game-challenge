@@ -13,8 +13,20 @@ class Tile(private val standardSize: Int, private val screenWidth: Int, private 
     private var destX: Int
     private var destY: Int
     private var moving = false
-    private val speed = 10
-    private var increment:Boolean = false
+    private val speed = 90
+    private var increment = false
+
+    init {
+        destX = screenWidth / 2 - 2 * standardSize + matrixY * standardSize
+        currentX = destX
+        destY = screenHeight / 2 - 2 * standardSize + matrixX * standardSize
+        currentY = destY
+        val chance = java.util.Random().nextInt(100)
+        if (chance >= 90)
+        {
+            count = 2
+        }
+    }
     fun move(matrixX: Int, matrixY: Int) {
         moving = true
         destX = screenWidth / 2 - 2 * standardSize + matrixY * standardSize
@@ -30,6 +42,7 @@ class Tile(private val standardSize: Int, private val screenWidth: Int, private 
                 count++
                 increment = false
             }
+            callback.finishedMoving(this)
         }
     }
 
@@ -78,14 +91,4 @@ class Tile(private val standardSize: Int, private val screenWidth: Int, private 
         }
     }
 
-    init {
-        destX = screenWidth / 2 - 2 * standardSize + matrixY * standardSize
-        currentX = destX
-        destY = screenHeight / 2 - 2 * standardSize + matrixX * standardSize
-        currentY = destY
-//        val chance: Int = Random().nextInt(100)
-//        if (chance >= 90) {
-//            value = 2
-//        }
-    }
 }

@@ -7,14 +7,14 @@ import com.example.a2048game.interfaces.TileManagerCallback
 
 class Tile(private val standardSize: Int, private val screenWidth: Int, private val screenHeight: Int, private val callback: TileManagerCallback, matrixX: Int, matrixY: Int) :
     Sprite {
-    var value = 1
+    private var count = 1
     private var currentX: Int
     private var currentY: Int
     private var destX: Int
     private var destY: Int
     private var moving = false
-    private val speed = 200
-
+    private val speed = 10
+    private var increment:Boolean = false
     fun move(matrixX: Int, matrixY: Int) {
         moving = true
         destX = screenWidth / 2 - 2 * standardSize + matrixY * standardSize
@@ -22,10 +22,29 @@ class Tile(private val standardSize: Int, private val screenWidth: Int, private 
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawBitmap(callback.getBitmap(value), currentX.toFloat(), currentY.toFloat(), null)
+        canvas.drawBitmap(callback.getBitmap(count), currentX.toFloat(), currentY.toFloat(), null)
         if (moving && currentX == destX && currentY == destY) {
             moving = false
+            if (increment)
+            {
+                count++
+                increment = false
+            }
         }
+    }
+
+    fun getValue():Int{
+        return count
+    }
+
+    fun increment():Tile
+    {
+        increment = true
+        return this
+    }
+
+    fun toIncrement(): Boolean {
+        return increment
     }
 
     override fun update() {

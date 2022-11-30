@@ -16,7 +16,7 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
     private val drawables: ArrayList<Int> = ArrayList()
     private val tileBitmaps: HashMap<Int, Bitmap> = HashMap()
     private var matrix = Array(4){ arrayOfNulls<Tile>(4) }
-    private val moving = false
+    private var moving = false
     private var movingTiles: ArrayList<Tile>? = null
 
 
@@ -70,7 +70,6 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
     }
 
    override fun draw(canvas: Canvas) {
-        //t.draw(canvas);
         for (i in 0..3) {
             for (j in 0..3) {
                 if (matrix[i][j] != null) {
@@ -81,7 +80,6 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
     }
 
     override fun update() {
-        //t.update();
         for (i in 0..3) {
             for (j in 0..3) {
                 if (matrix[i][j] != null) {
@@ -91,27 +89,284 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
         }
     }
 
-    fun onSwipe(direction: SwipeCallBack.Direction)
-    {
-        when(direction)
-        {
-            SwipeCallBack.Direction.UP->{
-                return
+    fun onSwipe(direction: SwipeCallBack.Direction?) {
+        if (!moving) {
+            moving = true
+            val newMatrix = Array(4) {
+                arrayOfNulls<Tile>(
+                    4
+                )
             }
-
-            SwipeCallBack.Direction.DOWN->{
-                return
+            when (direction) {
+                SwipeCallBack.Direction.UP -> {
+                    run {
+                        var i = 0
+                        while (i < 4) {
+                            var j = 0
+                            while (j < 4) {
+                                if (matrix[i][j] != null) {
+                                    newMatrix[i][j] = matrix[i][j]
+                                    var k = i - 1
+                                    while (k >= 0) {
+                                        if (newMatrix[k][j] == null) {
+                                            newMatrix[k][j] = matrix[i][j]
+                                            if (newMatrix[k + 1][j] == matrix[i][j]) {
+                                                newMatrix[k + 1][j] = null
+                                            }
+                                        } else if (newMatrix[k][j]!!
+                                                .getValue() == matrix[i][j]!!
+                                                .getValue() && !newMatrix[k][j]!!.toIncrement()
+                                        ) {
+                                            newMatrix[k][j] = matrix[i][j]!!.increment()
+                                            if (newMatrix[k + 1][j] == matrix[i][j]) {
+                                                newMatrix[k + 1][j] = null
+                                            }
+                                        } else {
+                                            break
+                                        }
+                                        k--
+                                    }
+                                }
+                                j++
+                            }
+                            i++
+                        }
+                    }
+                    var i = 0
+                    while (i < 4) {
+                        var j = 0
+                        while (j < 4) {
+                            val t = matrix[i][j]
+                            var newT: Tile? = null
+                            var matrixX = 0
+                            var matrixY = 0
+                            var a = 0
+                            while (a < 4) {
+                                var b = 0
+                                while (b < 4) {
+                                    if (newMatrix[a][b] == t) {
+                                        newT = newMatrix[a][b]
+                                        matrixX = a
+                                        matrixY = b
+                                        break
+                                    }
+                                    b++
+                                }
+                                a++
+                            }
+                            if (newT != null) {
+                                movingTiles?.add(t!!)
+                                t!!.move(matrixX, matrixY)
+                            }
+                            j++
+                        }
+                        i++
+                    }
+                }
+                SwipeCallBack.Direction.DOWN -> {
+                    run {
+                        var i = 3
+                        while (i >= 0) {
+                            var j = 0
+                            while (j < 4) {
+                                if (matrix[i][j] != null) {
+                                    newMatrix[i][j] = matrix[i][j]
+                                    var k = i + 1
+                                    while (k < 4) {
+                                        if (newMatrix[k][j] == null) {
+                                            newMatrix[k][j] = matrix[i][j]
+                                            if (newMatrix[k - 1][j] == matrix[i][j]) {
+                                                newMatrix[k - 1][j] = null
+                                            }
+                                        } else if (newMatrix[k][j]!!
+                                                .getValue() == matrix[i][j]!!
+                                                .getValue() && !newMatrix[k][j]!!.toIncrement()
+                                        ) {
+                                            newMatrix[k][j] = matrix[i][j]!!.increment()
+                                            if (newMatrix[k - 1][j] == matrix[i][j]) {
+                                                newMatrix[k - 1][j] = null
+                                            }
+                                        } else {
+                                            break
+                                        }
+                                        k++
+                                    }
+                                }
+                                j++
+                            }
+                            i--
+                        }
+                    }
+                    var i = 3
+                    while (i >= 0) {
+                        var j = 0
+                        while (j < 4) {
+                            val t = matrix[i][j]
+                            var newT: Tile? = null
+                            var matrixX = 0
+                            var matrixY = 0
+                            var a = 0
+                            while (a < 4) {
+                                var b = 0
+                                while (b < 4) {
+                                    if (newMatrix[a][b] == t) {
+                                        newT = newMatrix[a][b]
+                                        matrixX = a
+                                        matrixY = b
+                                        break
+                                    }
+                                    b++
+                                }
+                                a++
+                            }
+                            if (newT != null) {
+                                movingTiles?.add(t!!)
+                                t!!.move(matrixX, matrixY)
+                            }
+                            j++
+                        }
+                        i--
+                    }
+                }
+                SwipeCallBack.Direction.LEFT -> {
+                    run {
+                        var i = 0
+                        while (i < 4) {
+                            var j = 0
+                            while (j < 4) {
+                                if (matrix[i][j] != null) {
+                                    newMatrix[i][j] = matrix[i][j]
+                                    var k = j - 1
+                                    while (k >= 0) {
+                                        if (newMatrix[i][k] == null) {
+                                            newMatrix[i][k] = matrix[i][j]
+                                            if (newMatrix[i][k + 1] == matrix[i][j]) {
+                                                newMatrix[i][k + 1] = null
+                                            }
+                                        } else if (newMatrix[i][k]!!
+                                                .getValue() == matrix[i][j]!!
+                                                .getValue() && !newMatrix[i][k]!!.toIncrement()
+                                        ) {
+                                            newMatrix[i][k] = matrix[i][j]!!.increment()
+                                            if (newMatrix[i][k + 1] == matrix[i][j]) {
+                                                newMatrix[i][k + 1] = null
+                                            }
+                                        } else {
+                                            break
+                                        }
+                                        k--
+                                    }
+                                }
+                                j++
+                            }
+                            i++
+                        }
+                    }
+                    var i = 0
+                    while (i < 4) {
+                        var j = 0
+                        while (j < 4) {
+                            val t = matrix[i][j]
+                            var newT: Tile? = null
+                            var matrixX = 0
+                            var matrixY = 0
+                            var a = 0
+                            while (a < 4) {
+                                var b = 0
+                                while (b < 4) {
+                                    if (newMatrix[a][b] == t) {
+                                        newT = newMatrix[a][b]
+                                        matrixX = a
+                                        matrixY = b
+                                        break
+                                    }
+                                    b++
+                                }
+                                a++
+                            }
+                            if (newT != null) {
+                                movingTiles?.add(t!!)
+                                t!!.move(matrixX, matrixY)
+                            }
+                            j++
+                        }
+                        i++
+                    }
+                }
+                SwipeCallBack.Direction.RIGHT -> {
+                    run {
+                        var i = 0
+                        while (i < 4) {
+                            var j = 3
+                            while (j >= 0) {
+                                if (matrix[i][j] != null) {
+                                    newMatrix[i][j] = matrix[i][j]
+                                    var k = j + 1
+                                    while (k < 4) {
+                                        if (newMatrix[i][k] == null) {
+                                            newMatrix[i][k] = matrix[i][j]
+                                            if (newMatrix[i][k - 1] == matrix[i][j]) {
+                                                newMatrix[i][k - 1] = null
+                                            }
+                                        } else if (newMatrix[i][k]!!
+                                                .getValue() == matrix[i][j]!!
+                                                .getValue() && !newMatrix[i][k]!!.toIncrement()
+                                        ) {
+                                            newMatrix[i][k] = matrix[i][j]!!.increment()
+                                            if (newMatrix[i][k - 1] == matrix[i][j]) {
+                                                newMatrix[i][k - 1] = null
+                                            }
+                                        } else {
+                                            break
+                                        }
+                                        k++
+                                    }
+                                }
+                                j--
+                            }
+                            i++
+                        }
+                    }
+                    var i = 0
+                    while (i < 4) {
+                        var j = 3
+                        while (j >= 0) {
+                            val t = matrix[i][j]
+                            var newT: Tile? = null
+                            var matrixX = 0
+                            var matrixY = 0
+                            var a = 0
+                            while (a < 4) {
+                                var b = 0
+                                while (b < 4) {
+                                    if (newMatrix[a][b] == t) {
+                                        newT = newMatrix[a][b]
+                                        matrixX = a
+                                        matrixY = b
+                                        break
+                                    }
+                                    b++
+                                }
+                                a++
+                            }
+                            if (newT != null) {
+                                movingTiles?.add(t!!)
+                                t!!.move(matrixX, matrixY)
+                            }
+                            j--
+                        }
+                        i++
+                    }
+                }
             }
-
-            SwipeCallBack.Direction.LEFT->{
-                return
-            }
-
-            SwipeCallBack.Direction.RIGHT->{
-                return
-            }
+          
+            matrix = newMatrix
         }
     }
+
+
+
+
 
 
     override fun getBitmap(count: Int): Bitmap {

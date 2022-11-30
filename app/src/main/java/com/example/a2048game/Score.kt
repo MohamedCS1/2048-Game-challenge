@@ -16,7 +16,6 @@ class Score(
     Sprite {
     private val bmpScore: Bitmap
     private val bmpTopScore: Bitmap
-    private var bmpTopScoreBonus: Bitmap? = null
     private var bmp2048Bonus: Bitmap? = null
     private var score = 0
     private var topScore: Int
@@ -50,14 +49,6 @@ class Score(
             (bmpTopScore.height * 4).toFloat(),
             paint
         )
-        if (topScoreBonus) {
-            canvas.drawBitmap(
-                bmpTopScoreBonus!!,
-                (screenWidth / 2 - 2 * standardSize!!).toFloat(),
-                (screenHeight / 2 - 2 * standardSize - 2 * bmpTopScoreBonus!!.height).toFloat(),
-                null
-            )
-        }
         if (a2048Bonus) {
             canvas.drawBitmap(
                 bmp2048Bonus!!,
@@ -79,21 +70,10 @@ class Score(
         if (topScore < score) {
             prefs.edit().putInt(SCORE_PREF, score).apply()
             topScore = score
-            val width = resources.getDimension(R.dimen.score_bonus_width).toInt()
-            val height = resources.getDimension(R.dimen.score_bonus_height).toInt()
-            val tsb = BitmapFactory.decodeResource(resources, R.drawable.highscore)
-            bmpTopScoreBonus = Bitmap.createScaledBitmap(tsb, width, height, false)
-            topScoreBonus = true
         }
     }
 
-    fun reached2048() {
-        val width = resources.getDimension(R.dimen.score_bonus_width).toInt()
-        val height = resources.getDimension(R.dimen.score_bonus_height).toInt()
-        val bmp = BitmapFactory.decodeResource(resources, R.drawable.a2048)
-        bmp2048Bonus = Bitmap.createScaledBitmap(bmp, width, height, false)
-        a2048Bonus = true
-    }
+
 
     companion object {
         private const val SCORE_PREF = "Score pref"

@@ -8,7 +8,7 @@ import com.example.a2048game.interfaces.Sprite
 
 class EndGame(val resources: Resources ,val screenWidth:Int? ,val screenHeight:Int): Sprite {
 
-    lateinit var bitmap: Bitmap
+    var bitmap: Bitmap
     val endGameWidth = resources.getDimension(R.dimen.endgame_width)
     val endGameHeight = resources.getDimension(R.dimen.endgame_height)
 

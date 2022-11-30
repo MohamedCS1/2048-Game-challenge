@@ -1,8 +1,11 @@
 package com.example.a2048game
 
+
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.util.AttributeSet
 import android.util.DisplayMetrics
@@ -25,6 +28,10 @@ var tileManager:TileManager? = null
 var endGame = false
 var gameOverDialog: EndGame? = null
 var score:Score? = null
+var restartButton:Bitmap? = null
+var restartButtonX:Int? = null
+var restartButtonY:Int? = null
+var restartButtonSize:Int? = null
 class GameManager(context:Context ,val attrs:AttributeSet):SurfaceHolder.Callback,
     SurfaceView(context),SwipeCallBack ,GameManagerCallBack{
 
@@ -43,12 +50,24 @@ class GameManager(context:Context ,val attrs:AttributeSet):SurfaceHolder.Callbac
         gameOverDialog = EndGame(resources , screenWidth , screenHeight!!)
         score = Score(resources , screenWidth!!, screenHeight!!, standardSize ,getContext().getSharedPreferences(
             SHAREE_NAME ,Context.MODE_PRIVATE))
+
+
+        restartButtonSize = resources.getDimension(R.dimen.restart_button_size).toInt()
+        val bmpRestart = BitmapFactory.decodeResource(resources, R.drawable.restart)
+        restartButton = Bitmap.createScaledBitmap(
+            bmpRestart,
+            restartButtonSize!!, restartButtonSize!!, false
+        )
+        restartButtonX = (screenWidth!! / 2 + 2 * standardSize!! - restartButtonSize!!).toInt()
+        restartButtonY = (screenHeight!! / 2 - 2 * standardSize!! - 3 * restartButtonSize!! / 2).toInt()
     }
 
     fun initGame()
     {
         endGame = false
         tileManager?.initGame()
+        score = Score(resources , screenWidth!!, screenHeight!!, standardSize ,getContext().getSharedPreferences(
+            SHAREE_NAME ,Context.MODE_PRIVATE))
     }
 
     lateinit var mainThread: MainThread
@@ -88,6 +107,7 @@ class GameManager(context:Context ,val attrs:AttributeSet):SurfaceHolder.Callbac
         grid.draw(canvas!!)
         tileManager?.draw(canvas)
         score?.draw(canvas)
+        canvas.drawBitmap(restartButton!!, restartButtonX!!.toFloat() , restartButtonY!!.toFloat() ,null)
         if (endGame)
         {
             gameOverDialog?.draw(canvas)
@@ -98,16 +118,18 @@ class GameManager(context:Context ,val attrs:AttributeSet):SurfaceHolder.Callbac
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        if (endGame)
-        {
-            if (event?.action == MotionEvent.ACTION_DOWN)
-            {
+        if (endGame) {
+            if (event!!.action == MotionEvent.ACTION_DOWN) {
                 initGame()
             }
-        }
-        else
-        {
-            swipe?.onTouchEvent(event!!)
+        } else {
+            val eventX = event!!.getAxisValue(MotionEvent.AXIS_X)
+            val eventY = event.getAxisValue(MotionEvent.AXIS_Y)
+            if (event.action == MotionEvent.ACTION_DOWN && eventX > restartButtonX!! && eventX < restartButtonX!! + restartButtonSize!! && eventY > restartButtonY!! && eventY < restartButtonY!! + restartButtonSize!!) {
+                initGame()
+            } else {
+                swipe!!.onTouchEvent(event)
+            }
         }
         return super.onTouchEvent(event)
     }

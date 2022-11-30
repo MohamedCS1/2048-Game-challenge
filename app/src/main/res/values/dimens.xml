@@ -5,7 +5,5 @@
     <dimen name="score_lable_width">100dp</dimen>
     <dimen name="score_lable_height">15dp</dimen>
     <dimen name="score_text_size">15sp</dimen>
-    <dimen name="score_bonus_width">130dp</dimen>
-    <dimen name="score_bonus_height">20dp</dimen>
-    <dimen name="restart_button_size">50dp</dimen>
+    <dimen name="restart_button_size">45dp</dimen>
 </resources>

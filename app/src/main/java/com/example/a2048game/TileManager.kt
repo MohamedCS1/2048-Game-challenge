@@ -4,6 +4,7 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import com.example.a2048game.interfaces.GameManagerCallBack
 import com.example.a2048game.interfaces.Sprite
 import com.example.a2048game.interfaces.SwipeCallBack
 import com.example.a2048game.interfaces.SwipeCallBack.Direction.*
@@ -17,6 +18,7 @@ class TileManager(
     private val standardSize: Int,
     private val screenWidth: Int,
     private val screenHeight: Int,
+    private val gameManagerCallBack: GameManagerCallBack
 ) :
     TileManagerCallback, Sprite {
     private val drawables: ArrayList<Int> = ArrayList()
@@ -29,6 +31,7 @@ class TileManager(
     private var moving = false
     private var movingTiles: ArrayList<Tile?>? = null
     private var toSpawn = false
+    private var endGame = false
 
     private fun initBitmaps() {
         drawables.add(R.drawable.one)
@@ -75,8 +78,6 @@ class TileManager(
         return tileBitmaps[count]!!
     }
 
-
-
     override fun draw(canvas: Canvas) {
         for (i in 0..3) {
             for (j in 0..3) {
@@ -85,7 +86,10 @@ class TileManager(
                 }
             }
         }
-       
+        if (endGame)
+        {
+            gameManagerCallBack.gameOver()
+        }
     }
 
     override fun update() {
@@ -402,6 +406,7 @@ class TileManager(
         if (movingTiles!!.isEmpty()) {
             moving = false
             spawn()
+            checkEndGame()
         }
     }
 
@@ -417,6 +422,36 @@ class TileManager(
                 if (matrix[x][y] == null) {
                     t = Tile(standardSize, screenWidth, screenHeight, this, x, y)
                     matrix[x][y] = t
+                }
+            }
+        }
+    }
+
+    fun checkEndGame()
+    {
+        endGame = true
+        for (i in 0..3)
+        {
+            for (j in 0..3)
+            {
+                if (matrix[i][j] == null)
+                {
+                    endGame = false
+                    break
+                }
+            }
+        }
+        if (endGame)
+        {
+            for (i in 0..3) {
+                for (j in 0..3) {
+                    if (i > 0 && matrix[i - 1][j]!!.getValue() == matrix[i][j]!!.getValue() ||
+                        i < 3 && matrix[i + 1][j]!!.getValue() == matrix[i][j]!!.getValue() ||
+                        j > 0 && matrix[i][j - 1]!!.getValue() == matrix[i][j]!!.getValue() ||
+                        j < 3 && matrix[i][j + 1]!!.getValue() == matrix[i][j]!!.getValue()
+                    ) {
+                        endGame = false
+                    }
                 }
             }
         }

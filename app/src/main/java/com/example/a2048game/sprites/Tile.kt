@@ -5,67 +5,68 @@ import com.example.a2048game.interfaces.Sprite
 import com.example.a2048game.interfaces.TileManagerCallback
 
 
-var count = 1
-var currentX:Int? = null
-var currentY:Int? = null
-var desX:Int? = null
-var desY:Int? = null
-var moving = false
-var speed = 10
-class Tile(val standardSize:Int ,val screenWidth:Int ,val screenHeight:Int ,val callback: TileManagerCallback ,matrixX:Int ,matrixY:Int): Sprite {
-    init {
-        desX = screenWidth / 2 - 2 * standardSize + matrixY * standardSize
-        currentX = desX
-        desY = screenHeight / 2 - 2 * standardSize + matrixX * standardSize
-        currentY = desY
-    }
+class Tile(private val standardSize: Int, private val screenWidth: Int, private val screenHeight: Int, private val callback: TileManagerCallback, matrixX: Int, matrixY: Int) :
+    Sprite {
+    var value = 1
+    private var currentX: Int
+    private var currentY: Int
+    private var destX: Int
+    private var destY: Int
+    private var moving = false
+    private val speed = 200
 
-
-    fun move(matrixX: Int ,matrixY: Int)
-    {
+    fun move(matrixX: Int, matrixY: Int) {
         moving = true
-        desX = screenWidth / 2 - 2 * standardSize + matrixY * standardSize
-        desY = screenHeight / 2 - 2 * standardSize + matrixX * standardSize
+        destX = screenWidth / 2 - 2 * standardSize + matrixY * standardSize
+        destY = screenHeight / 2 - 2 * standardSize + matrixX * standardSize
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawBitmap(callback.getBitmap(count) ,
-            currentX!!.toFloat() , currentY!!.toFloat() ,null)
-
-        if (moving && currentX == desX && currentY == desY)
-        {
+        canvas.drawBitmap(callback.getBitmap(value), currentX.toFloat(), currentY.toFloat(), null)
+        if (moving && currentX == destX && currentY == destY) {
             moving = false
         }
     }
 
     override fun update() {
-        if (currentX!! < desX!!) {
-            if (currentX!! + speed > desX!!) {
-                currentX = desX
+        if (currentX < destX) {
+            if (currentX + speed > destX) {
+                currentX = destX
             } else {
-                currentX = currentX!! + speed
+                currentX += speed
             }
-        } else if (currentX!! > desX!!) {
-            if (currentX!! - speed < desX!!) {
-                currentX = desX
+        } else if (currentX > destX) {
+            if (currentX - speed < destX) {
+                currentX = destX
             } else {
-                currentX = currentX!! - speed
+                currentX -= speed
             }
         }
-        if (currentY!! < desY!!) {
-            if (currentY!! + speed > desY!!) {
-                currentY = desY
+        if (currentY < destY) {
+            if (currentY + speed > destY) {
+                currentY = destY
             } else {
-                currentY = currentY!! + speed
+                currentY += speed
             }
-        } else if (currentY!! > desY!!) {
-            if (currentY!! > desY!!) {
-                if (currentY!! - speed < desY!!) {
-                    currentY = desY
+        } else if (currentY > destY) {
+            if (currentY > destY) {
+                if (currentY - speed < destY) {
+                    currentY = destY
                 } else {
-                    currentY = currentY!! - speed
+                    currentY -= speed
                 }
             }
         }
+    }
+
+    init {
+        destX = screenWidth / 2 - 2 * standardSize + matrixY * standardSize
+        currentX = destX
+        destY = screenHeight / 2 - 2 * standardSize + matrixX * standardSize
+        currentY = destY
+//        val chance: Int = Random().nextInt(100)
+//        if (chance >= 90) {
+//            value = 2
+//        }
     }
 }

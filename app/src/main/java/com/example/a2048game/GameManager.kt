@@ -1,6 +1,5 @@
 package com.example.a2048game
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.Canvas
@@ -28,7 +27,7 @@ class GameManager(context:Context ,val attrs:AttributeSet):SurfaceHolder.Callbac
         (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
         screenWidth = displayMetrics.widthPixels
         screenHeight = displayMetrics.heightPixels
-        standardSize = ((screenWidth!! * .88) / 4)
+        standardSize = ((screenWidth!! * .88)  / 4)
         grid = Grid(resources , screenWidth!!, screenHeight!! , standardSize!!.toInt())
         tileManager = TileManager(resources , standardSize!!.toInt(), screenWidth!!, screenHeight!!)
         swipe = SwipeListener(context,this)

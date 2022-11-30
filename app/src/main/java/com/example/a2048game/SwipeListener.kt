@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.GestureDetector
 import android.view.MotionEvent
 import com.example.a2048game.interfaces.SwipeCallBack
+import kotlin.math.abs
 
 var detector:GestureDetector? = null
 
@@ -42,7 +43,7 @@ class SwipeListener(val context: Context, var callBack: SwipeCallBack):GestureDe
         velocityX: Float,
         velocityY: Float
     ): Boolean {
-        if (Math.abs(velocityX) > Math.abs(velocityY)) {
+        if (abs(velocityX) > abs(velocityY)) {
             if (velocityX > 0) {
                 callBack.onSwipe(SwipeCallBack.Direction.RIGHT)
             } else {

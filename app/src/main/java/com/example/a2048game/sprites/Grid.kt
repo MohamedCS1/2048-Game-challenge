@@ -8,7 +8,7 @@ import com.example.a2048game.R
 import com.example.a2048game.interfaces.Sprite
 
 lateinit var grid:Bitmap
-class Grid(val resources: Resources ,val screenWith:Int ,val screenHeight:Int ,val standardSize:Int):
+class Grid(val resources: Resources ,val screenWidth:Int ,val screenHeight:Int ,val standardSize:Int):
     Sprite {
 
 
@@ -18,7 +18,7 @@ class Grid(val resources: Resources ,val screenWith:Int ,val screenHeight:Int ,v
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawBitmap(grid ,(screenWith / 2 - grid.width / 2).toFloat() ,(screenHeight / 2 - grid.height / 2).toFloat() ,null)
+        canvas.drawBitmap(grid ,(screenWidth / 2 - grid.width / 2).toFloat() ,(screenHeight / 2 - grid.height / 2).toFloat() ,null)
     }
 
     override fun update() {

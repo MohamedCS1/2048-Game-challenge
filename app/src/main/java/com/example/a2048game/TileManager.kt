@@ -9,18 +9,20 @@ import com.example.a2048game.interfaces.SwipeCallBack
 import com.example.a2048game.interfaces.TileManagerCallback
 import com.example.a2048game.sprites.Tile
 
-lateinit var tile:Tile
-var tileBitmaps = hashMapOf<Int ,Bitmap>()
-var drawables = arrayListOf<Int>()
-private val matrix = Array(4) { arrayOfNulls<Tile>(4) }
 
 class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidth:Int ,val screenHeight:Int):TileManagerCallback, Sprite {
 
-    init {
-        tile = Tile(standardSize ,screenWidth ,screenHeight ,this ,1 ,1)
-        initBitmaps()
 
-        matrix[1][1] = tile
+    private val drawables: ArrayList<Int> = ArrayList()
+    private val tileBitmaps: HashMap<Int, Bitmap> = HashMap()
+    private var matrix = Array(4){ arrayOfNulls<Tile>(4) }
+    private val moving = false
+    private var movingTiles: ArrayList<Tile>? = null
+
+
+    init {
+        initBitmaps()
+        initGame()
     }
 
     fun initBitmaps()
@@ -45,17 +47,48 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
         for (i in 1..16)
         {
             val bitmap = BitmapFactory.decodeResource(resources , drawables[i-1])
-            val titleBitmap = Bitmap.createScaledBitmap(bitmap ,standardSize ,standardSize ,false)
-            tileBitmaps[i] = titleBitmap
+            val tileBitmap = Bitmap.createScaledBitmap(bitmap ,standardSize ,standardSize ,false)
+            tileBitmaps[i] = tileBitmap
         }
     }
 
-    override fun draw(canvas: Canvas) {
-        tile.draw(canvas)
+    fun initGame() {
+
+        matrix = Array(4) { arrayOfNulls(4) }
+        var i = 0
+        while (i < 5) {
+            val x = java.util.Random().nextInt(4)
+            val y = java.util.Random().nextInt(4)
+            if (matrix[x][y] == null) {
+                val tile = Tile(standardSize, screenWidth, screenHeight, this, x, y)
+                matrix[x][y] = tile
+            } else {
+                i--
+            }
+            i++
+        }
+    }
+
+   override fun draw(canvas: Canvas) {
+        //t.draw(canvas);
+        for (i in 0..3) {
+            for (j in 0..3) {
+                if (matrix[i][j] != null) {
+                    matrix[i][j]!!.draw(canvas)
+                }
+            }
+        }
     }
 
     override fun update() {
-        tile.update()
+        //t.update();
+        for (i in 0..3) {
+            for (j in 0..3) {
+                if (matrix[i][j] != null) {
+                    matrix[i][j]!!.update()
+                }
+            }
+        }
     }
 
     fun onSwipe(direction: SwipeCallBack.Direction)
@@ -63,22 +96,18 @@ class TileManager(val resources: Resources ,val standardSize:Int ,val screenWidt
         when(direction)
         {
             SwipeCallBack.Direction.UP->{
-                tile.move(0 ,1)
                 return
             }
 
             SwipeCallBack.Direction.DOWN->{
-                tile.move(3 ,1)
                 return
             }
 
             SwipeCallBack.Direction.LEFT->{
-                tile.move(1 ,0)
                 return
             }
 
             SwipeCallBack.Direction.RIGHT->{
-                tile.move(1 ,3)
                 return
             }
         }

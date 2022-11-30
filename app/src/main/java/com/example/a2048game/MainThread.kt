@@ -26,7 +26,7 @@ class MainThread(var surfaceHolder: SurfaceHolder, val gameManager: GameManager)
         var timeMillis:Long
         var waitTime:Long
         var totalTime = 0
-        var targetTime = 100/targetFPS
+        val targetTime = 100/targetFPS
 
         while (running!!)
         {

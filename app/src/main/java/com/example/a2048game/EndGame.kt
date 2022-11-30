@@ -1,12 +1,12 @@
-package com.example.a2048game.interfaces
+package com.example.a2048game
 
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
-import com.example.a2048game.R
+import com.example.a2048game.interfaces.Sprite
 
-class EndGame(val resources: Resources ,val screenWidth:Int? ,val screenHeight:Int):Sprite {
+class EndGame(val resources: Resources ,val screenWidth:Int? ,val screenHeight:Int): Sprite {
 
     lateinit var bitmap: Bitmap
     val endGameWidth = resources.getDimension(R.dimen.endgame_width)

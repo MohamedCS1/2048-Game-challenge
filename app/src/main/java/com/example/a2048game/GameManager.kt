@@ -10,10 +10,12 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
-import com.example.a2048game.interfaces.EndGame
 import com.example.a2048game.interfaces.GameManagerCallBack
 import com.example.a2048game.interfaces.SwipeCallBack
 import com.example.a2048game.sprites.Grid
+
+
+private val SHAREE_NAME = "2048"
 
 lateinit var grid: Grid
 var screenWidth:Int? = null
@@ -21,7 +23,8 @@ var screenHeight:Int? = null
 var standardSize:Double? = null
 var tileManager:TileManager? = null
 var endGame = false
-var gameOverDialog:EndGame? = null
+var gameOverDialog: EndGame? = null
+var score:Score? = null
 class GameManager(context:Context ,val attrs:AttributeSet):SurfaceHolder.Callback,
     SurfaceView(context),SwipeCallBack ,GameManagerCallBack{
 
@@ -38,6 +41,8 @@ class GameManager(context:Context ,val attrs:AttributeSet):SurfaceHolder.Callbac
         swipe = SwipeListener(context,this)
         isLongClickable = true
         gameOverDialog = EndGame(resources , screenWidth , screenHeight!!)
+        score = Score(resources , screenWidth!!, screenHeight!!, standardSize ,getContext().getSharedPreferences(
+            SHAREE_NAME ,Context.MODE_PRIVATE))
     }
 
     fun initGame()
@@ -82,6 +87,7 @@ class GameManager(context:Context ,val attrs:AttributeSet):SurfaceHolder.Callbac
         canvas?.drawRGB(255 ,255 ,255)
         grid.draw(canvas!!)
         tileManager?.draw(canvas)
+        score?.draw(canvas)
         if (endGame)
         {
             gameOverDialog?.draw(canvas)
@@ -112,5 +118,9 @@ class GameManager(context:Context ,val attrs:AttributeSet):SurfaceHolder.Callbac
 
     override fun gameOver() {
         endGame = true
+    }
+
+    override fun updateScore(sc: Int) {
+        score?.updateScore(sc)
     }
 }

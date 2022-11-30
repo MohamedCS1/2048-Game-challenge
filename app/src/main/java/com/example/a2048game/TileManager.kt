@@ -410,6 +410,9 @@ class TileManager(
         }
     }
 
+    override fun updateScore(score: Int) {
+        gameManagerCallBack.updateScore(score)
+    }
 
 
     private fun spawn() {

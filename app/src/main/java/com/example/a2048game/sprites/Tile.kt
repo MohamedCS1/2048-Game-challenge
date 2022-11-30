@@ -3,6 +3,7 @@ package com.example.a2048game.sprites
 import android.graphics.Canvas
 import com.example.a2048game.interfaces.Sprite
 import com.example.a2048game.interfaces.TileManagerCallback
+import kotlin.math.pow
 
 
 class Tile(private val standardSize: Int, private val screenWidth: Int, private val screenHeight: Int, private val callback: TileManagerCallback, matrixX: Int, matrixY: Int) :
@@ -41,6 +42,7 @@ class Tile(private val standardSize: Int, private val screenWidth: Int, private 
             {
                 count++
                 increment = false
+                callback.updateScore(2.0.pow(count.toDouble()).toInt())
             }
             callback.finishedMoving(this)
         }
